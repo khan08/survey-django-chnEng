@@ -1,0 +1,9 @@
+{% if interview %}
+    <ul>
+    {% for instrument in interview %}
+        <li><a href="instrument/{{ instrument.id }}/">{{ instrument.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>Not available.</p>
+{% endif %}
