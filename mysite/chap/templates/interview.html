@@ -1,9 +1,24 @@
-{% if interview %}
-    <ul>
-    {% for instrument in interview %}
-        <li><a href="instrument/{{ instrument.id }}/">{{ instrument.name }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Not available.</p>
-{% endif %}
+{% extends "base.html" %}
+{% block content %}
+<header class="navbar navbar-fixed-top">
+    {% include "header.html" %}
+</header>
+<div class="row">
+    <div class="container">
+    <div class="alert alert-info">
+        <p>Interview:   {{ interview.name }}</p>
+        <p>ID:  {{ interview.participant.pk }}</p>
+        <p>Name: {{ interview.participant.firstName }}</p>
+    </div>
+    {% if interview.instruments %}
+        <ul class="list-group">
+        {% for instrument in interview.instruments %}
+            <li class="list-group-item"><a href="instrument/{{ instrument.id }}/">{{ instrument.name }}</a><span class="badge">test</span></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Not available.</p>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

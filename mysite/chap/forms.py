@@ -1,8 +1,8 @@
-from django.forms.models import inlineformset_factory
+from django.forms.models import modelformset_factory
 from . import models
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.bootstrap import InlineRadios
+from crispy_forms.bootstrap import InlineRadios,InlineCheckboxes
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field, HTML, Div
 from django.utils.safestring import mark_safe
 
@@ -11,32 +11,42 @@ class AnswerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(AnswerForm, self).__init__(*args, **kwargs)
         question = self.instance.question
-        choices = question.choice_set.all()
-        choice_tup = ((x.id, x) for x in choices)
+        self.choices = question.choice_set.all()
+        choice_tup = ((x.id, x) for x in self.choices)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-exampleForm'
-        self.helper.form_method = 'post'
-        self.helper.form_action = 'submit_survey'
-        self.helper.label_class = 'col-lg-12'
-        self.helper.field_class = 'col-lg-12'
+        #self.helper.label_class = 'col-lg-12'
+        #self.helper.field_class = 'col-lg-12'
         self.helper.form_tag = False
+
+        #custom layout
+        if question.type==0:
+            self.fields['answer'] = forms.ChoiceField(choices=(choice_tup), widget=forms.RadioSelect(), label=question,required=False)
+            field = InlineRadios('answer', choices=choice_tup, wrapper_class='radio-form',required=False)
+        elif question.type==1:
+            self.fields['answer'] = forms.MultipleChoiceField(choices=(choice_tup), label=question,required=False)
+            field = InlineCheckboxes('answer', choices=choice_tup, wrapper_class='radio-form')
+        elif question.type==2:
+            self.fields['answer'] = forms.CharField(label=question,required=False)
+            field = Field('answer')
+        isHide = question.parent is not None
         self.helper.layout = Layout(
-            Fieldset(
-                question,
-                InlineRadios('answer', choices=choice_tup, wrapper_class='radio-form'),
-
+            Div(
+                #question,
+                field,
+                css_class="jumbotron myJumbotron",
+                css_id= question.pk,
+                hidden = isHide
             ),
-            #Field('answer', autocomplete='off')
         )
-        self.fields['answer'] = forms.ChoiceField(choices=(choice_tup), widget=forms.RadioSelect,label='', required=False)
-
+        #self.fields['question'] = forms.(choices=(choice_tup), widget=forms.RadioInput,label='', required=False)
     class Meta:
         model = models.Answer
-        exclude = ['']
-        #widgets = {'answer': forms.RadioSelect(choices=(('yes', 'yes'), ('no', 'no')))}
+        exclude = ['question','user','participant','interview','instrument']
 
 
-
+'''
 AnswerFormSet = inlineformset_factory(models.Instrument,
         models.Answer,form=AnswerForm, exclude=('interview','question'),
         extra=0, can_delete=False,)
+'''
+AnswerFormSet = modelformset_factory(models.Answer,form=AnswerForm,extra=0,can_delete=False)

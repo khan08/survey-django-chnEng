@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'sortedm2m_filter_horizontal_widget',
     'adminsortable2',
     'crispy_forms',
+    'address',
+    'django_mysql',
 ]
 
 MIDDLEWARE = [
@@ -108,6 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'].append("chap.context_processors.interview_processor", )
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -125,6 +128,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
+LOGIN_REDIRECT_URL = 'home'
 STATIC_URL = '/static/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+GOOGLE_API_KEY="AIzaSyDL4hT1npCx3mktwF4jXE_I383bGrh60oU"

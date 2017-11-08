@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question,Instrument,Interview,Choice
+from .models import Question,Instrument,Interview,Choice,Participant,Assignment
 from sortedm2m_filter_horizontal_widget.forms import SortedFilteredSelectMultiple
 from adminsortable2.admin import SortableInlineAdminMixin
 
@@ -32,8 +32,11 @@ class InterviewAdmin(admin.ModelAdmin):
 
 
 
+
 # Register your models here.
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Instrument, InstrumentAdmin)
 admin.site.register(Interview, InterviewAdmin)
 admin.site.register(Choice, ChoiceAdmin)
+admin.site.register(Participant)
+admin.site.register(Assignment)

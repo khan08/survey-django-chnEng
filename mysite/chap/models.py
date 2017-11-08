@@ -11,6 +11,10 @@ from django.db import models
 import datetime
 from sortedm2m.fields import SortedManyToManyField
 from django.contrib.auth.models import User
+from address.models import AddressField
+from django_mysql.models import JSONField
+
+
 
 class Instrument(models.Model):
     abbr = models.CharField(max_length=20)
@@ -81,13 +85,60 @@ class Choice(models.Model):
         db_table = 'choice'
         ordering = ('sort_value',)
 
+class Language(models.Model):
+    name = models.CharField(max_length=255)
+
+class Participant(models.Model):
+    firstName = models.CharField(max_length=255)
+    lastName = models.CharField(max_length=255)
+    chineseName = models.CharField(max_length=255)
+    homePhone = models.CharField(max_length=255,blank=True, null=True)
+    workPhone = models.CharField(max_length=255,blank=True, null=True)
+    cellPhone = models.CharField(max_length=255,blank=True, null=True)
+    gender = models.CharField(max_length=255,blank=True, null=True)
+    address = AddressField(blank=True, null=True)
+    speakPre = models.ForeignKey(Language,related_name="speakPre",blank=True, null=True)
+    writePre = models.ForeignKey(Language,related_name="writePre",blank=True, null=True)
+    readPre = models.ForeignKey(Language,related_name="readPre",blank=True, null=True)
+    speakCan = models.ManyToManyField(Language,related_name="speakCan")
+    writeCan = models.ManyToManyField(Language,related_name="writeCan")
+    readCan = models.ManyToManyField(Language,related_name="readCan")
+    family = models.ManyToManyField("self")
+    status = models.CharField(max_length=255,blank=True, null=True)
+    attr = JSONField(blank=True, null=True)
+    dob = models.DateField(blank=True, null=True)
+    def __str__(self):
+        return self.firstName+" "+self.lastName
+
 class Answer(models.Model):
-    #user = models.ForeignKey(User)
+    user = models.ForeignKey(User)
     question = models.ForeignKey(Question)
     answer = models.CharField(max_length=255)
-    #participant = models.ForeignKey(User, related_name='participant')
-
+    participant = models.ForeignKey(Participant)
     instrument = models.ForeignKey(Instrument)
     interview = models.ForeignKey(Interview)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'answer'
+
+class Assignment(models.Model):
+    interview = models.ForeignKey(Interview)
+    user = models.ForeignKey(User)
+    participant = models.ForeignKey(Participant)
+    created = models.DateTimeField(default=datetime.datetime.now)
+    def __str__(self):
+        return self.interview.__str__()+", "+self.user.__str__()+", "+self.participant.__str__()
+    class Meta:
+        unique_together = (("interview", "user", "participant"),)
+
+class ContactLog(models.Model):
+    interview = models.ForeignKey(Interview)
+    user = models.ForeignKey(User)
+    participant = models.ForeignKey(Participant)
+    created = models.DateTimeField(default=datetime.datetime.now)
+    result = models.CharField(max_length=255)
+    attr = JSONField()
+
+class QuestionType(models.Model):
+    name = models.CharField(max_length=50)
