@@ -1,4 +1,7 @@
-body { padding-top: 70px; }
+body {
+    padding-top: 70px;
+    background-color:#f7f9f9;
+}
 
 html,body {
     height: 100%
@@ -27,15 +30,15 @@ input[type=radio],input[type=checkbox] {
   white-space: nowrap
   width: 100%;
   background-color: #e4e4e4;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 100);
   font-size: 14px;
   font-weight: normal;
   text-align: center;
   text-shadow: none;
   padding: 6px 14px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0);
+  //-webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+  //box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
   -webkit-transition: all 0.1s ease-in-out;
   -moz-transition:    all 0.1s ease-in-out;
   -ms-transition:     all 0.1s ease-in-out;
@@ -48,7 +51,7 @@ input[type=radio],input[type=checkbox] {
 }
 
 input[type=radio]:checked + .radio-inline,input[type=checkbox]:checked + .checkbox-inline {
-  background-color: #A5DC86;
+  background-color: #4285F4;
   -webkit-box-shadow: none;
   box-shadow: none;
 }
@@ -105,6 +108,12 @@ input[type=radio]:checked + .radio-inline,input[type=checkbox]:checked + .checkb
 }
 
 .myJumbotron {
-    background-color:#f7f9f9;
-    padding: 30px;
+    vertical-align: middle;
+    padding-bottom: 60px;
 }
+
+.pager li input{
+    width:100px
+}
+
+

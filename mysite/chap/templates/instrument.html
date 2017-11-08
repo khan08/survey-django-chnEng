@@ -3,7 +3,17 @@
 <header class="navbar navbar-fixed-top">
     {% include "header.html" %}
 </header>
-<div class="container">
+
+  <nav class="panel panel-primary" >
+      <div class="panel-heading">{{ instrument }}</div>
+      <div class="panel-body">
+          {% if instrument.help %}
+            {{ instrument.help }}
+          {% else %}
+            Follow instructions below.
+          {% endif %}
+      </div>
+  </nav>
   {% load crispy_forms_tags %}
   <form id="formset" method="POST" action="#">
       {% csrf_token %}
@@ -24,14 +34,12 @@
             {% crispy form %}
         {% endfor %}
       </table>
-      <br><br>
-      <div class="question-group">
-      <div class="form-group">
-          <div class="btn-group">
-            <input type="submit" class="btn"/>
-          </div>
-      </div>
+      <div class="fixed-bottom">
+          <ul class="pager">
+            <li><input type="submit" class="btn btn-default" value="Previous" name="Prev"/></li>
+            <li><input type="submit" class="btn btn-default" value="Save" name="Save"/></li>
+            <li><input type="submit" class="btn btn-default" value="Next" name="Next"/></li>
+          </ul>
       </div>
   </form>
-</div>
 {% endblock %}

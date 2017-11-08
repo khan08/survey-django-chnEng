@@ -23,7 +23,8 @@ class Instrument(models.Model):
     category = models.CharField(max_length=100, blank=True, null=True)
     content = models.CharField(max_length=1000, blank=True, null=True)
     chinesecontent = models.CharField(db_column='chineseContent', max_length=1000, blank=True, null=True)  # Field name made lowercase.
-    tran_date = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -31,11 +32,15 @@ class Instrument(models.Model):
     class Meta:
         db_table = 'instrument'
 
+class InterviewInstrument(object):
+    pass
+
 class Interview(models.Model):
-    instrument = SortedManyToManyField(Instrument)
+    instrument = SortedManyToManyField(Instrument,base_class=InterviewInstrument)
     name = models.CharField(max_length=100, blank=True, null=True)
     comment = models.CharField(max_length=500, blank=True, null=True)
-    tran_date = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     #tran_user = models.CharField(max_length=15, blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
 
@@ -58,7 +63,8 @@ class Question(models.Model):
     ch_help = models.CharField(max_length=1000, blank=True, null=True)
     hascomment = models.IntegerField(db_column='hasComment', blank=True, null=True)  # Field name made lowercase.
     label = models.CharField(max_length=20, blank=True, null=True)
-    tran_date = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     sort_value = models.IntegerField(default=0)
 
 
@@ -75,7 +81,8 @@ class Choice(models.Model):
     chcontent = models.CharField(db_column='chContent', max_length=200, blank=True, null=True)  # Field name made lowercase.
     code = models.CharField(max_length=5, blank=True, null=True)
     triggersub = models.IntegerField(blank=True, null=True)
-    tran_date = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     sort_value = models.IntegerField(default=0)
 
     def __str__(self):
@@ -107,6 +114,8 @@ class Participant(models.Model):
     status = models.CharField(max_length=255,blank=True, null=True)
     attr = JSONField(blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.firstName+" "+self.lastName
 
@@ -126,7 +135,8 @@ class Assignment(models.Model):
     interview = models.ForeignKey(Interview)
     user = models.ForeignKey(User)
     participant = models.ForeignKey(Participant)
-    created = models.DateTimeField(default=datetime.datetime.now)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.interview.__str__()+", "+self.user.__str__()+", "+self.participant.__str__()
     class Meta:
@@ -136,9 +146,22 @@ class ContactLog(models.Model):
     interview = models.ForeignKey(Interview)
     user = models.ForeignKey(User)
     participant = models.ForeignKey(Participant)
-    created = models.DateTimeField(default=datetime.datetime.now)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
     result = models.CharField(max_length=255)
     attr = JSONField()
 
 class QuestionType(models.Model):
     name = models.CharField(max_length=50)
+
+class InterviewInstance(models.Model):
+    assignment = models.ForeignKey(Assignment)
+    percentage = models.FloatField(default=0)
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    attr = JSONField()
+
+class InstrumentInstance(models.Model):
+    interviewInstance = models.ForeignKey(InterviewInstance)
+    state = models.IntegerField(blank=True, null=True)
+

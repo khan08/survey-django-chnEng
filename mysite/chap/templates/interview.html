@@ -5,10 +5,13 @@
 </header>
 <div class="row">
     <div class="container">
-    <div class="alert alert-info">
-        <p>Interview:   {{ interview.name }}</p>
-        <p>ID:  {{ interview.participant.pk }}</p>
-        <p>Name: {{ interview.participant.firstName }}</p>
+    <div class="panel panel-primary">
+      <div class="panel-heading">{{ interview.interviewInstance.assignment.interview }}'s Participant Information</div>
+      <div class="panel-body">
+        <p>ID:  {{ interview.interviewInstance.assignment.participant.pk }}</p>
+        <p>Name: {{ interview.interviewInstance.assignment.participant.firstName }}</p>
+    </div>
+
     </div>
     {% if interview.instruments %}
         <ul class="list-group">
