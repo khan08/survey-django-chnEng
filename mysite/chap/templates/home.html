@@ -29,8 +29,8 @@
             <td>{{ assignment.participant.chineseName }}</td>
             <td>{{ assignment.interview }}</td>
             <td>
-                <a type="button" class="btn btn-primary"/>View detail</a>
-                <a type="button" class="btn btn-warning">Update Status</a>
+                <a type="button" class="btn btn-primary" href="admin/chap/participant/{{ assignment.participant.pk }}/change?source=main"/>Verify Detail</a>
+                <a type="button" class="btn btn-warning" href="{{ assignment.interview.pk }}/{{ assignment.participant.pk }}/">Update Contact</a>
                 <a type="button" class="btn btn-success" href="{{ assignment.interview.pk }}/{{ assignment.participant.pk }}/">Start {{ assignment.interview }}</a>
             </td>
         </tr>

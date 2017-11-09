@@ -107,10 +107,10 @@ class Participant(models.Model):
     speakPre = models.ForeignKey(Language,related_name="speakPre",blank=True, null=True)
     writePre = models.ForeignKey(Language,related_name="writePre",blank=True, null=True)
     readPre = models.ForeignKey(Language,related_name="readPre",blank=True, null=True)
-    speakCan = models.ManyToManyField(Language,related_name="speakCan")
-    writeCan = models.ManyToManyField(Language,related_name="writeCan")
-    readCan = models.ManyToManyField(Language,related_name="readCan")
-    family = models.ManyToManyField("self")
+    speakCan = models.ManyToManyField(Language,related_name="speakCan", blank=True, null=True)
+    writeCan = models.ManyToManyField(Language,related_name="writeCan", blank=True, null=True)
+    readCan = models.ManyToManyField(Language,related_name="readCan", blank=True, null=True)
+    family = models.ManyToManyField("self", blank=True, null=True)
     status = models.CharField(max_length=255,blank=True, null=True)
     attr = JSONField(blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
@@ -128,6 +128,7 @@ class Answer(models.Model):
     interview = models.ForeignKey(Interview)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    comment = models.CharField(max_length=255, blank=True, null=True)
     class Meta:
         db_table = 'answer'
 
@@ -137,6 +138,7 @@ class Assignment(models.Model):
     participant = models.ForeignKey(Participant)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    isVerify = models.BooleanField(default=False)
     def __str__(self):
         return self.interview.__str__()+", "+self.user.__str__()+", "+self.participant.__str__()
     class Meta:
@@ -155,7 +157,8 @@ class QuestionType(models.Model):
     name = models.CharField(max_length=50)
 
 class InterviewInstance(models.Model):
-    assignment = models.ForeignKey(Assignment)
+    interview = models.ForeignKey(Interview)
+    participant = models.ForeignKey(Participant)
     percentage = models.FloatField(default=0)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -163,5 +166,7 @@ class InterviewInstance(models.Model):
 
 class InstrumentInstance(models.Model):
     interviewInstance = models.ForeignKey(InterviewInstance)
+    instrument = models.ForeignKey(Instrument)
     state = models.IntegerField(blank=True, null=True)
-
+    answered = models.IntegerField(blank=True, null=True)
+    total = models.IntegerField(blank=True, null=True)

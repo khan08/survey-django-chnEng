@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+  <h2 class="text-center">Chinese Healthy Aging Study</h2>
+  <div class="login-register-form-section">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="active"><a href="#login" data-toggle="tab">Login</a></li>
+            <li><a href="#register" class="btn disabled">Register</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade in active" id="/">
+                <form class="form-horizontal" method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group " >
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                            <input class="form-control" id="{{ field.id_for_label }}" placeholder = "{{ field.name }}" maxlength="30" name="{{ field.html_name }}"  type="{{ field.name }}" />
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <input type="submit" value="Login" class="btn btn-success btn-custom">
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ field.name }}:{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <strong>{{ error|escape }}</strong>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </form>
+            </div>
+            <!--div role="tabpanel" class="tab-pane fade" id="register">
+                <form class="form-horizontal" method="post" action="">
+                    <div class="form-group ">
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                            <input type="text" name="register_username" class="form-control" placeholder="Username" required="required" value="">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-male"></i></div>
+                            <input type="text" name="register_fullname" class="form-control" placeholder="Full name" required="required" value="">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-envelope"></i></div>
+                            <input type="email" name="register_email" class="form-control" placeholder="Email" required="required" value="">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-lock"></i></div>
+                            <input type="password" name="register_password" class="form-control" placeholder="Password" required="required">
+                        </div>
+                    </div>
+                    <div class="form-group ">
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-lock"></i></div>
+                            <input type="password" name="register_cpassword" class="form-control" placeholder="Confirm Password" required="required">
+                        </div>
+                    </div>
+                    <input type="submit" value="Register" class="btn btn-success btn-custom">
+                </form>
+            </div-->
+        </div>
+  </div>
+{% endblock %}

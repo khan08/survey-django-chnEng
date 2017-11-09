@@ -107,13 +107,23 @@ input[type=radio]:checked + .radio-inline,input[type=checkbox]:checked + .checkb
     padding: 0 20px;
 }
 
-.myJumbotron {
+.questionDiv {
     vertical-align: middle;
     padding-bottom: 60px;
+    width: 50%
 }
 
 .pager li input{
     width:100px
+}
+
+.help-block{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.question-comment{
+    margin-top: 40px;
 }
 
 

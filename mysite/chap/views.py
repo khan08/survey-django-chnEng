@@ -1,9 +1,10 @@
 from django.views import generic
-from .models import Interview,Participant,Answer,Instrument
+from .models import Interview,Participant,Answer,Instrument,InstrumentInstance
 from django import forms
 from django.shortcuts import render_to_response, get_object_or_404,redirect
 from . import models, forms
 from django.core import serializers
+from django.db.models import Sum
 
 # Create your views here.
 
@@ -13,9 +14,14 @@ class InterviewIndexView(generic.ListView):
     def get_queryset(self):
         interview = Interview.objects.get(id=self.kwargs['pk'])
         participant = Participant.objects.get(id=self.kwargs['participant_id'])
-        assignment = models.Assignment.objects.get(interview=interview,participant=participant)
-        interviewInstance,created = models.InterviewInstance.objects.get_or_create(assignment=assignment)
-        return {'instruments':interview.instrument.all(),'interviewInstance':interviewInstance}
+        interviewInstance,created = models.InterviewInstance.objects.get_or_create(interview=interview,participant=participant)
+        if interviewInstance.instrumentinstance_set.count()==0:
+            for scale in interviewInstance.interview.instrument.all():
+                newInstrumentInstance = InstrumentInstance(instrument=scale,interviewInstance=interviewInstance)
+                newInstrumentInstance.save()
+        totalAnswered = interviewInstance.instrumentinstance_set.all().aggregate(Sum('answered'))
+        total = interviewInstance.instrumentinstance_set.all().aggregate(Sum('total'))
+        return {'instruments':interviewInstance.instrumentinstance_set.all(),'interviewInstance':interviewInstance,'totalAnswered':totalAnswered,'total':total}
 
 class HomeView(generic.ListView):
     context_object_name = 'assignments'
@@ -35,6 +41,8 @@ def questionView(request, instrument_id, interview_id, participant_id):
     interview = get_object_or_404(models.Interview, id=interview_id)
     user = request.user
     participant = get_object_or_404(models.Participant, id=participant_id)
+    interviewInstance = get_object_or_404(models.InterviewInstance, interview=interview,participant=participant)
+    instrumentInstance, created = models.InstrumentInstance.objects.get_or_create(interviewInstance=interviewInstance,instrument=instrument)
     answers = Answer.objects.filter(interview=interview,instrument=instrument,participant=participant)
     if len(answers) == 0:
         prepare_blank_answers(interview,instrument,user,participant)
@@ -43,6 +51,9 @@ def questionView(request, instrument_id, interview_id, participant_id):
         formset = forms.AnswerFormSet(request.POST, queryset=answers.order_by('question__sort_value'),initial=[{'user':request.user}])
         if formset.is_valid():
             formset.save()
+            instrumentInstance.answered = request.POST['answered'];
+            instrumentInstance.total = request.POST['total'];
+            instrumentInstance.save();
             if 'Next' in request.POST:
                 try:
                     instrumentInstance = Interview.instrument.through.objects.get(instrument=instrument,interview=interview)

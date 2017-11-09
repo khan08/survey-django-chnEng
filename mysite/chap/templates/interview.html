@@ -6,17 +6,27 @@
 <div class="row">
     <div class="container">
     <div class="panel panel-primary">
-      <div class="panel-heading">{{ interview.interviewInstance.assignment.interview }}'s Participant Information</div>
+      <div class="panel-heading">{{ interview.interviewInstance.interview }}'s Participant Interview Information</div>
       <div class="panel-body">
-        <p>ID:  {{ interview.interviewInstance.assignment.participant.pk }}</p>
-        <p>Name: {{ interview.interviewInstance.assignment.participant.firstName }}</p>
+        <p>ID:  {{ interview.interviewInstance.participant.pk }}</p>
+        <p>Name: {{ interview.interviewInstance.participant.firstName }}</p>
+        <p>Total Questions Answered: {{ interview.totalAnswered.answered__sum }}</p>
+        <p>Total Questions Started: {{ interview.total.total__sum }}</p>
     </div>
 
     </div>
     {% if interview.instruments %}
         <ul class="list-group">
-        {% for instrument in interview.instruments %}
-            <li class="list-group-item"><a href="instrument/{{ instrument.id }}/">{{ instrument.name }}</a><span class="badge">test</span></li>
+        {% for instrumentInstance in interview.instruments %}
+            <li class="list-group-item"><a href="instrument/{{ instrumentInstance.instrument.id }}/">{{ instrumentInstance.instrument.name }}
+                {% if instrumentInstance.answered and instrumentInstance.answered == instrumentInstance.total %}
+                </a><span class="label label-success pull-right">{{ instrumentInstance.answered }}/{{ instrumentInstance.total }}</span>
+                {% elif instrumentInstance.answered and instrumentInstance.answered < instrumentInstance.total %}
+                </a><span class="label label-warning pull-right">{{ instrumentInstance.answered }}/{{ instrumentInstance.total }}</span>
+                {% else %}
+                </a><span class="label label-default pull-right">not started</span>
+                {% endif %}
+            </li>
         {% endfor %}
         </ul>
     {% else %}

@@ -7,4 +7,8 @@ $(document).ready(function(){
     $(this).parent().attr('for',$(this).attr("id"))
     $(this).parent().before(this);
     });
+
+    $('.help-block').each(function(){
+        $(this).parent().prepend(this);
+    })
 });

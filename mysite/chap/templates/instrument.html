@@ -5,10 +5,10 @@
 </header>
 
   <nav class="panel panel-primary" >
-      <div class="panel-heading">{{ instrument }}</div>
+      <div class="panel-heading">{{ instrument }}<label class="percentage pull-right"></label></div>
       <div class="panel-body">
-          {% if instrument.help %}
-            {{ instrument.help }}
+          {% if instrument.content %}
+            {{ instrument.content }}
           {% else %}
             Follow instructions below.
           {% endif %}
@@ -17,6 +17,8 @@
   {% load crispy_forms_tags %}
   <form id="formset" method="POST" action="#">
       {% csrf_token %}
+      <input type="number" name="answered" id="answeredQuestion" hidden>
+      <input type="number" name="total" id="totalQuestion" hidden>
       <table>
           <script type="text/javascript">
             var isTrigger = {};
@@ -41,5 +43,6 @@
             <li><input type="submit" class="btn btn-default" value="Next" name="Next"/></li>
           </ul>
       </div>
+      <div class="text-center"><span class="label label-primary">This page progress: <label class="percentage text-center"></label></span></div>
   </form>
 {% endblock %}
